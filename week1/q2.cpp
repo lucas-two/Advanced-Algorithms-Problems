@@ -19,20 +19,16 @@ bool isParallel(line lin1, line lin2);
 int main()
 {
     line line1, line2;
-
-    line1 = {
-        line1.p1.x = 1,
-        line1.p1.y = 2,
-        line1.p2.x = 3,
-        line1.p2.y = 4,
-    };
-
-    line2 = {
-        line2.p1.x = 1,
-        line2.p1.y = 2,
-        line2.p2.x = 3,
-        line2.p2.y = 4,
-    };
+    // Line 1
+    line1.p1.x = 1;
+    line1.p1.y = 2;
+    line1.p2.x = 3;
+    line1.p2.y = 4;
+    // Line 2
+    line2.p1.x = 1;
+    line2.p1.y = 2;
+    line2.p2.x = 3;
+    line2.p2.y = 4;
 
     if (isParallel(line1, line2))
     {
