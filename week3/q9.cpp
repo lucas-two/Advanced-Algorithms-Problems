@@ -72,20 +72,48 @@ int main()
     // Set starting node to distance 0
     bestDistance[startingNodeIndex] = 0;
 
-    // For each node...
-    for (int currentNode = 0; currentNode < numOfNodes; currentNode++)
+    // Run (numberOfNodes - 1) iterations
+    for (int i = 0; i < numOfNodes - 1; i++)
     {
-        // For each edge where the node equals the current node...
-        for (int currentEdge = 0; currentEdge < numOfEdges; currentEdge++)
+        cout << "iteration #" << i << endl;
+        // For each node...
+        for (int currentNode = 0; currentNode < numOfNodes; currentNode++)
         {
-            if (edges[currentEdge].from == currentNode)
+            // For each edge where the node equals the current node...
+            for (int currentEdge = 0; currentEdge < numOfEdges; currentEdge++)
             {
-                // Check if new distance (Edge weight + Best distance) is less than current distance.
-                float newDistance = edges[currentEdge].weight + bestDistance[edges[currentEdge].from];
-                if (newDistance < bestDistance[edges[currentEdge].to])
+                if (edges[currentEdge].from == currentNode)
                 {
-                    // Rleax node
-                    bestDistance[edges[currentEdge].to] = newDistance;
+                    // Check if new distance (Edge weight + Best distance) is less than current distance.
+                    float newDistance = edges[currentEdge].weight + bestDistance[edges[currentEdge].from];
+                    if (newDistance < bestDistance[edges[currentEdge].to])
+                    {
+                        // Rleax node
+                        bestDistance[edges[currentEdge].to] = newDistance;
+                        cout << edges[currentEdge].to << ": " << bestDistance[edges[currentEdge].to] << endl;
+                    }
+                }
+            }
+        }
+    }
+
+    // Run iterations again but for finding the negative cycles
+    for (int i = 0; i < numOfNodes - 1; i++)
+    {
+        cout << "iteration #" << i << endl;
+        for (int currentNode = 0; currentNode < numOfNodes; currentNode++)
+        {
+            for (int currentEdge = 0; currentEdge < numOfEdges; currentEdge++)
+            {
+                if (edges[currentEdge].from == currentNode)
+                {
+                    float newDistance = edges[currentEdge].weight + bestDistance[edges[currentEdge].from];
+                    if (newDistance < bestDistance[edges[currentEdge].to])
+                    {
+                        // Set to negative infinity
+                        bestDistance[edges[currentEdge].to] = -INFINITY;
+                        cout << edges[currentEdge].to << ": " << bestDistance[edges[currentEdge].to] << endl;
+                    }
                 }
             }
         }
