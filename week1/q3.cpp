@@ -15,6 +15,8 @@ struct line
     point p1, p2;
 };
 
+double PI = 2 * acos(0.0);
+
 bool isEqualLength(line seg[4]);
 bool isLinked(line seg[4]);
 bool isRightAngleJoined(line seg[4]);
@@ -50,6 +52,8 @@ int main()
 
     // bool result = isEqualLength(segment);
     bool result = isLinked(segment);
+    printSegments(segment);
+    bool result2 = isRightAngleJoined(segment);
     return 0;
 };
 
@@ -60,6 +64,7 @@ bool isEqualLength(line seg[4])
     {
         cout << distance(seg[i]) << endl;
     }
+    return 0;
 };
 bool isLinked(line seg[4])
 {
@@ -104,6 +109,15 @@ bool isLinked(line seg[4])
 };
 bool isRightAngleJoined(line seg[4])
 {
+    line lin1 = seg[0];
+    line lin2 = seg[1];
+    float grad1 = abs((lin1.p2.y - lin1.p1.y) * (lin2.p2.x - lin2.p1.x));
+    float grad2 = abs((lin2.p2.y - lin2.p1.y) * (lin1.p2.x - lin1.p1.x));
+    cout << "Line 1 grad: " << grad1 << endl;
+    cout << "Line 2 grad: " << grad2 << endl;
+    float angle = atan((grad1 - grad2) / (1 + (grad1 * grad2)));
+    float angle_deg = angle * 180 / PI;
+    cout << "Angle: " << angle_deg << endl;
     return 0;
 };
 
