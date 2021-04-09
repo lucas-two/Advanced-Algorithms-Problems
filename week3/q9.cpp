@@ -15,13 +15,19 @@ struct node
 {
     int id;
 };
+struct dist
+{
+    float cost;   // Total cost to arrive at this node
+    int nodeFrom; // What node did it come from?
+};
+int traceBack(dist distArray[], int node, int path[50], int pathIndex);
 
-int main()
+main()
 {
     const int numOfEdges = 10;
     const int numOfNodes = 5;
     const int startingNodeIndex = 0;
-    float bestDistance[numOfNodes];
+    dist bestDistance[numOfNodes];
 
     // Initialise nodes
     node nodes[numOfNodes];
@@ -66,11 +72,13 @@ int main()
     // Initialise best-distance array values to infinity
     for (int i = 0; i < numOfNodes; i++)
     {
-        bestDistance[i] = INFINITY;
+        bestDistance[i].cost = INFINITY;
+        bestDistance[i].nodeFrom = -1; // Null
     }
 
-    // Set starting node to distance 0
-    bestDistance[startingNodeIndex] = 0;
+    // Set starting node to distance 0 and the node it came from as itself
+    bestDistance[startingNodeIndex].cost = 0;
+    bestDistance[startingNodeIndex].nodeFrom = 0;
 
     // Run (numberOfNodes - 1) iterations
     for (int i = 0; i < numOfNodes - 1; i++)
@@ -85,12 +93,13 @@ int main()
                 if (edges[currentEdge].from == currentNode)
                 {
                     // Check if new distance (Edge weight + Best distance) is less than current distance.
-                    float newDistance = edges[currentEdge].weight + bestDistance[edges[currentEdge].from];
-                    if (newDistance < bestDistance[edges[currentEdge].to])
+                    float newDistance = edges[currentEdge].weight + bestDistance[edges[currentEdge].from].cost;
+                    if (newDistance < bestDistance[edges[currentEdge].to].cost)
                     {
                         // Rleax node
-                        bestDistance[edges[currentEdge].to] = newDistance;
-                        cout << edges[currentEdge].to << ": " << bestDistance[edges[currentEdge].to] << endl;
+                        bestDistance[edges[currentEdge].to].cost = newDistance;                 // Update with new distance
+                        bestDistance[edges[currentEdge].to].nodeFrom = edges[currentEdge].from; // Update which node it came from
+                        cout << edges[currentEdge].to << ": " << bestDistance[edges[currentEdge].to].cost << endl;
                     }
                 }
             }
@@ -107,12 +116,13 @@ int main()
             {
                 if (edges[currentEdge].from == currentNode)
                 {
-                    float newDistance = edges[currentEdge].weight + bestDistance[edges[currentEdge].from];
-                    if (newDistance < bestDistance[edges[currentEdge].to])
+                    float newDistance = edges[currentEdge].weight + bestDistance[edges[currentEdge].from].cost;
+                    if (newDistance < bestDistance[edges[currentEdge].to].cost)
                     {
                         // Set to negative infinity
-                        bestDistance[edges[currentEdge].to] = -INFINITY;
-                        cout << edges[currentEdge].to << ": " << bestDistance[edges[currentEdge].to] << endl;
+                        bestDistance[edges[currentEdge].to].cost = -INFINITY;
+                        bestDistance[edges[currentEdge].to].nodeFrom = edges[currentEdge].from;
+                        cout << edges[currentEdge].to << ": " << bestDistance[edges[currentEdge].to].cost << endl;
                     }
                 }
             }
@@ -121,7 +131,25 @@ int main()
 
     for (int i = 0; i < numOfNodes; i++)
     {
-        cout << i << ": " << bestDistance[i] << endl;
+        cout << i << ": " << bestDistance[i].cost << " (from node " << bestDistance[i].nodeFrom << ")" << endl;
     }
+    traceBack(bestDistance, 0, , 0);
     return 0;
 }
+
+int traceBack(dist distArray[], int node, int path[50], int pathIndex)
+{
+    path[pathIndex] = node;
+    int a = sizeof(path) / sizeof(path[0]);
+    cout << a << endl;
+    if (node == 0)
+    {
+        cout << (node) << endl;
+        for (int i = 0; i < sizeof(*path); i++)
+        {
+            cout << "PATH:" << path[i] << endl;
+        }
+        return 1;
+    }
+    return traceBack(distArray, distArray[node].nodeFrom, path, pathIndex++);
+};
