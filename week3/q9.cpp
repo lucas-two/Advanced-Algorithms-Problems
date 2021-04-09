@@ -2,6 +2,7 @@
 
 #include <iostream>
 #include <cmath>
+#include <string>
 using namespace std;
 
 struct edge
@@ -20,7 +21,7 @@ struct dist
     float cost;   // Total cost to arrive at this node
     int nodeFrom; // What node did it come from?
 };
-int traceBack(dist distArray[], int node, int path[50], int pathIndex);
+string getPath(dist distArray[], int node);
 
 main()
 {
@@ -83,7 +84,6 @@ main()
     // Run (numberOfNodes - 1) iterations
     for (int i = 0; i < numOfNodes - 1; i++)
     {
-        cout << "iteration #" << i << endl;
         // For each node...
         for (int currentNode = 0; currentNode < numOfNodes; currentNode++)
         {
@@ -99,7 +99,6 @@ main()
                         // Rleax node
                         bestDistance[edges[currentEdge].to].cost = newDistance;                 // Update with new distance
                         bestDistance[edges[currentEdge].to].nodeFrom = edges[currentEdge].from; // Update which node it came from
-                        cout << edges[currentEdge].to << ": " << bestDistance[edges[currentEdge].to].cost << endl;
                     }
                 }
             }
@@ -109,7 +108,6 @@ main()
     // Run iterations again but for finding the negative cycles
     for (int i = 0; i < numOfNodes - 1; i++)
     {
-        cout << "iteration #" << i << endl;
         for (int currentNode = 0; currentNode < numOfNodes; currentNode++)
         {
             for (int currentEdge = 0; currentEdge < numOfEdges; currentEdge++)
@@ -122,34 +120,46 @@ main()
                         // Set to negative infinity
                         bestDistance[edges[currentEdge].to].cost = -INFINITY;
                         bestDistance[edges[currentEdge].to].nodeFrom = edges[currentEdge].from;
-                        cout << edges[currentEdge].to << ": " << bestDistance[edges[currentEdge].to].cost << endl;
                     }
                 }
             }
         }
     }
-
-    for (int i = 0; i < numOfNodes; i++)
+    cout << "BELLMAN-FORD ALGORITHM" << endl;
+    cout << "Shortest path from Node 0 to..." << endl
+         << endl;
+    // Displaying the shortest path output
+    for (int i = 1; i < numOfNodes; i++)
     {
-        cout << i << ": " << bestDistance[i].cost << " (from node " << bestDistance[i].nodeFrom << ")" << endl;
+        cout << "(Node " << i << ")" << endl;
+        cout << "Cost: " << bestDistance[i].cost << endl;
+        cout << "Path: " << getPath(bestDistance, i) << endl
+             << endl;
     }
-    traceBack(bestDistance, 0, , 0);
+    getPath(bestDistance, 4);
     return 0;
 }
 
-int traceBack(dist distArray[], int node, int path[50], int pathIndex)
+string getPath(dist distArray[], int node)
+/* Trace a shortest path route to a node. */
 {
-    path[pathIndex] = node;
-    int a = sizeof(path) / sizeof(path[0]);
-    cout << a << endl;
-    if (node == 0)
+    string spacing = " -> ";
+    string path = "";
+    int currentNode = node;
+    while (currentNode != 0)
     {
-        cout << (node) << endl;
-        for (int i = 0; i < sizeof(*path); i++)
+        // Don't add arrow spacing if it's the first node
+        if (currentNode == node)
         {
-            cout << "PATH:" << path[i] << endl;
+            path = to_string(currentNode) + path;
+            currentNode = distArray[currentNode].nodeFrom;
+            continue;
         }
-        return 1;
+        // Add the node to the path
+        path = to_string(currentNode) + spacing + path;
+        currentNode = distArray[currentNode].nodeFrom;
     }
-    return traceBack(distArray, distArray[node].nodeFrom, path, pathIndex++);
+    // Add starting node to path
+    path = to_string(currentNode) + spacing + path;
+    return path;
 };
