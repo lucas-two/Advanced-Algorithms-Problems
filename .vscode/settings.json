@@ -1,6 +1,8 @@
 {
     "files.associations": {
         "ostream": "cpp",
-        "xutility": "cpp"
+        "xutility": "cpp",
+        "cstdlib": "cpp",
+        "cmath": "cpp"
     }
 }

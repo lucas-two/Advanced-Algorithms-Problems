@@ -17,9 +17,9 @@ struct line
 
 double PI = 2 * acos(0.0);
 
-bool isEqualLength(line seg[4]);
-bool isLinked(line seg[4]);
-bool isRightAngleJoined(line seg[4]);
+void isEqualLength(line seg[4]);
+void isLinked(line seg[4]);
+void isRightAngleJoined(line seg[4]);
 float distance(line a);
 void printSegments(line seg[4]);
 void swapPoints(line &a);
@@ -50,14 +50,15 @@ int main()
     segment[3].p2.x = 1;
     segment[3].p2.y = 1;
 
-    bool result = isEqualLength(segment);
-    bool result1 = isLinked(segment);
     printSegments(segment);
-    bool result2 = isRightAngleJoined(segment);
+    isEqualLength(segment);
+    isLinked(segment);
+    isRightAngleJoined(segment);
+    cout << "Yes, lines form a square!" << endl;
     return 0;
 };
 
-bool isEqualLength(line seg[4])
+void isEqualLength(line seg[4])
 {
     /* A square has equal line lengths */
     float currentDistance = distance(seg[0]); // Length of first line
@@ -74,10 +75,9 @@ bool isEqualLength(line seg[4])
             exit(1);
         }
     }
-    cout << "Line lengths are equal!" << endl;
-    return true;
+    cout << "[True] Equal lengths." << endl;
 };
-bool isLinked(line seg[4])
+void isLinked(line seg[4])
 {
     swapSegment(seg[3], seg[1]);
     swapSegment(seg[2], seg[3]);
@@ -114,22 +114,39 @@ bool isLinked(line seg[4])
         }
         currentIndex++;
     }
-    cout << "Lines linked!" << endl;
-    printSegments(seg);
-    return true;
+    cout << "[True] Linked." << endl;
+    // printSegments(seg);
 };
-bool isRightAngleJoined(line seg[4])
+void isRightAngleJoined(line seg[4])
 {
-    line lin1 = seg[0];
-    line lin2 = seg[1];
-    float grad1 = abs((lin1.p2.y - lin1.p1.y) * (lin2.p2.x - lin2.p1.x));
-    float grad2 = abs((lin2.p2.y - lin2.p1.y) * (lin1.p2.x - lin1.p1.x));
-    // cout << "Line 1 grad: " << grad1 << endl;
-    // cout << "Line 2 grad: " << grad2 << endl;
-    float angle = atan((grad1 - grad2) / (1 + (grad1 * grad2)));
-    float angle_deg = angle * 180 / PI;
-    // cout << "Angle: " << angle_deg << endl;
-    return 0;
+    for (int j, i = 0; i < 4; i++)
+    {
+        // Check next line in the segment
+        if (i < 3)
+        {
+            j = i + 1;
+        }
+        // Check the last line [3] against the first line [0]
+        else
+        {
+            j = 0;
+        }
+        line lin1 = seg[i];
+        line lin2 = seg[j];
+        float grad1 = abs((lin1.p2.y - lin1.p1.y) * (lin2.p2.x - lin2.p1.x));
+        float grad2 = abs((lin2.p2.y - lin2.p1.y) * (lin1.p2.x - lin1.p1.x));
+        // Get the two accute angles (they should both be 45deg and thus add up to 90deg)
+        float angle1 = abs(atan((grad2 - grad1) / (1 + (grad2 * grad1))));
+        float angle2 = abs(atan((grad1 - grad2) / (1 + (grad1 * grad2))));
+        float angle = angle1 + angle2;
+        float angle_deg = angle * 180 / PI;
+        if (angle_deg != 90)
+        {
+            cout << "Not a square. (Line angles are not 90 degrees.)" << endl;
+            exit(1);
+        }
+    }
+    cout << "[True] 90 degree angles." << endl;
 };
 
 float distance(line a)
