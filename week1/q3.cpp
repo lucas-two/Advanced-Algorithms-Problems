@@ -50,8 +50,8 @@ int main()
     segment[3].p2.x = 1;
     segment[3].p2.y = 1;
 
-    // bool result = isEqualLength(segment);
-    bool result = isLinked(segment);
+    bool result = isEqualLength(segment);
+    bool result1 = isLinked(segment);
     printSegments(segment);
     bool result2 = isRightAngleJoined(segment);
     return 0;
@@ -60,11 +60,22 @@ int main()
 bool isEqualLength(line seg[4])
 {
     /* A square has equal line lengths */
-    for (int i = 0; i < 4; i++)
+    float currentDistance = distance(seg[0]); // Length of first line
+    for (int i = 1; i < 4; i++)
     {
-        cout << distance(seg[i]) << endl;
+        // Is the line the same length as the previous line?
+        if (distance(seg[i]) == currentDistance)
+        {
+            currentDistance = distance(seg[i]);
+        }
+        else
+        {
+            cout << "Not a square. (Lines lengths are different.)" << endl;
+            exit(1);
+        }
     }
-    return 0;
+    cout << "Line lengths are equal!" << endl;
+    return true;
 };
 bool isLinked(line seg[4])
 {
@@ -76,12 +87,12 @@ bool isLinked(line seg[4])
     int currentIndex = 0;
     while (currentIndex < 3)
     {
-        cout << "Current index: " << currentIndex << endl;
+        // cout << "Current index: " << currentIndex << endl;
         bool matchFound = false;
         // Check if there are any matches between the remaining segments
         for (int i = currentIndex + 1; i <= 3; i++)
         {
-            cout << "Checking for matches with " << currentIndex << " and " << i << endl;
+            // cout << "Checking for matches with " << currentIndex << " and " << i << endl;
             matchFound = match(seg[currentIndex], seg[i]);
             if (matchFound)
             {
@@ -89,7 +100,7 @@ bool isLinked(line seg[4])
                 // (Unless it's already next to the current index)
                 if (i != currentIndex + 1)
                 {
-                    cout << "Swapping with segment next to current index" << endl;
+                    // cout << "Swapping with segment next to current index" << endl;
                     swapSegment(seg[currentIndex + 1], seg[i]);
                 }
                 break;
@@ -113,11 +124,11 @@ bool isRightAngleJoined(line seg[4])
     line lin2 = seg[1];
     float grad1 = abs((lin1.p2.y - lin1.p1.y) * (lin2.p2.x - lin2.p1.x));
     float grad2 = abs((lin2.p2.y - lin2.p1.y) * (lin1.p2.x - lin1.p1.x));
-    cout << "Line 1 grad: " << grad1 << endl;
-    cout << "Line 2 grad: " << grad2 << endl;
+    // cout << "Line 1 grad: " << grad1 << endl;
+    // cout << "Line 2 grad: " << grad2 << endl;
     float angle = atan((grad1 - grad2) / (1 + (grad1 * grad2)));
     float angle_deg = angle * 180 / PI;
-    cout << "Angle: " << angle_deg << endl;
+    // cout << "Angle: " << angle_deg << endl;
     return 0;
 };
 
@@ -154,21 +165,21 @@ bool match(line &a, line &b)
 {
     if (a.p2.x == b.p1.x && a.p2.y == b.p1.y)
     {
-        cout << "Point 1 of the lines match!" << endl;
+        // cout << "Point 1 of the lines match!" << endl;
         return true;
     }
     else if (a.p2.x == b.p2.x && a.p2.y == b.p2.y)
     {
-        cout << "Point 2 of the lines match!" << endl;
-        cout << "(swap line B's points)" << endl;
+        // cout << "Point 2 of the lines match!" << endl;
+        // cout << "(swap line B's points)" << endl;
         swapPoints(b);
         return true;
     }
     else
     {
-        cout << "Lines did not match" << endl;
-        cout << "point A (" << a.p2.x << "," << a.p2.y << ") !=" << endl;
-        cout << "point B [(" << b.p1.x << "," << b.p1.y << ") or (" << b.p2.x << "," << b.p2.y << ")]" << endl;
+        // cout << "Lines did not match" << endl;
+        // cout << "point A (" << a.p2.x << "," << a.p2.y << ") !=" << endl;
+        // cout << "point B [(" << b.p1.x << "," << b.p1.y << ") or (" << b.p2.x << "," << b.p2.y << ")]" << endl;
     }
     return false;
 }
