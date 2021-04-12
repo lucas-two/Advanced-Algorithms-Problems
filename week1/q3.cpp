@@ -5,6 +5,7 @@
 #include <iostream>
 #include <cmath>
 using namespace std;
+#define PI (2 * acos(0.0))
 
 struct point
 {
@@ -14,8 +15,6 @@ struct line
 {
     point p1, p2;
 };
-
-double PI = 2 * acos(0.0);
 
 void isEqualLength(line seg[4]);
 void isLinked(line seg[4]);
@@ -136,6 +135,7 @@ void isRightAngleJoined(line seg[4])
         float grad1 = abs((lin1.p2.y - lin1.p1.y) * (lin2.p2.x - lin2.p1.x));
         float grad2 = abs((lin2.p2.y - lin2.p1.y) * (lin1.p2.x - lin1.p1.x));
         // Get the two accute angles (they should both be 45deg and thus add up to 90deg)
+        // (NOTE: Maybe can use atan2 but it's giving an error when I use it)
         float angle1 = abs(atan((grad2 - grad1) / (1 + (grad2 * grad1))));
         float angle2 = abs(atan((grad1 - grad2) / (1 + (grad1 * grad2))));
         float angle = angle1 + angle2;
