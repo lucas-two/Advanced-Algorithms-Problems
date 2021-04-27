@@ -4,6 +4,7 @@ points.
 */
 #include <iostream>
 #include <cmath>
+#include <vector>
 using namespace std;
 #define PI (2 * acos(0.0))
 #define noOfPoints 9 // Number of points being used
@@ -46,9 +47,34 @@ int main()
     findBottomPoint(points);
     sortByAngle(points);
 
+    cout << ccw(points[0], points[1], points[3]);
+
     for (int i = 0; i < noOfPoints; i++)
     {
-        cout << "Point (" << points[i].x << "," << points[i].y << ") has angle: " << points[i].angle << endl;
+        cout << "#" << i << " Point (" << points[i].x << "," << points[i].y << ") has angle: " << points[i].angle << endl;
+    }
+
+    // Loop over sorted points
+    vector<point> stack;
+    stack.insert(stack.end(), points[0]); // Push p0 to stack
+
+    for (int i = 1; i < noOfPoints; i++)
+    {
+        while (stack.size() >= 2 && ccw(stack[stack.size() - 2], stack[stack.size() - 1], points[i]) != 1)
+        {
+            // Pop from stack
+            stack.erase(stack.end() - 1);
+        }
+        // Otherwise insert into the stack
+        stack.insert(stack.end(), points[i]);
+    }
+
+    // Print our convex hull:
+    cout << endl
+         << "Convex Hull: " << endl;
+    for (int i = 0; i < stack.size(); i++)
+    {
+        cout << "(" << stack[i].x << "," << stack[i].y << ")" << endl;
     }
 }
 
@@ -116,6 +142,13 @@ int compare(const void *a, const void *b)
 {
     const point *pointA = (point *)a;
     const point *pointB = (point *)b;
+
+    // This patch keeps it from swapping our lowest point
+    // with an equal lowest point.
+    if (pointA->angle == pointB->angle)
+    {
+        return 1;
+    }
 
     if (pointA->angle > pointB->angle)
     {
