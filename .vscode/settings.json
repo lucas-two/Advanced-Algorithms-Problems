@@ -6,6 +6,8 @@
         "cmath": "cpp",
         "iostream": "cpp",
         "stack": "cpp",
-        "vector": "cpp"
+        "vector": "cpp",
+        "deque": "cpp",
+        "xstring": "cpp"
     }
 }
