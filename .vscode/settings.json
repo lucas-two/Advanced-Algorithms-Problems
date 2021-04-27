@@ -8,6 +8,7 @@
         "stack": "cpp",
         "vector": "cpp",
         "deque": "cpp",
-        "xstring": "cpp"
+        "xstring": "cpp",
+        "xtree": "cpp"
     }
 }
